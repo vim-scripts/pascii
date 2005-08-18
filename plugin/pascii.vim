@@ -1,8 +1,9 @@
 
 " Vim global plugin for printing ascii table
 " Maintainer: Lubos Celko <celbos@inmail.sk>
-" Last change: 26. 03. 2002
-" Version: 1.2
+" Updated by Bill McCarthy
+" Last change: 19. 08. 20025
+" Version: 1.3
 
 
 " Functions prints ascii table in eight columns. 
@@ -21,7 +22,14 @@ let s:cpo_save = &cpo
 set cpo&vim
 
   function PrintAscii()
-    split printascii
+    32split printascii
+
+    " Save 'report', 'expandtab' and 'tabstop'
+    let s:report_save = &report
+    let s:expandtab_save = &expandtab
+    let s:tabstop_save = &tabstop
+    set expandtab tabstop=8 report=99999
+
     let i = 0
 
     "ascii table is printed in 32 rows
@@ -72,6 +80,17 @@ set cpo&vim
       let i = i + 1
 
     endwhile
+
+    " First pretty it up a bit
+    %s/\s\+/\t/g
+    %s/\t\(\d\)-/\t  \1-/g
+    %s/\t\(\d\d\)-/\t \1-/g
+    %s/^\t//
+    1d|retab
+    " now restore 'report', 'expandtab' and 'tabstop'
+    let &report = s:report_save
+    let &expandtab = s:expandtab_save
+    let &tabstop = s:tabstop_save
   endfunction
 
 
